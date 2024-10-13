@@ -3,13 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Image</title>
+    <title>Upload Bill</title>
+    <style>
+        /* General Page Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #F5F3FF; /* Very light lavender background */
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Heading Styles */
+        h1 {
+            font-size: 28px;
+            color: #7D7ACD; /* Soft lavender heading color */
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #5F5A9F; /* Darker lavender for subheadings */
+        }
+
+        /* Form Styles */
+        .form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #5F5A9F;
+        }
+
+        /* File Input Styles */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input {
+            font-size: 16px;
+            background-color: #7D7ACD;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .file-input:hover {
+            background-color: #5F5A9F; /* Darker lavender on hover */
+        }
+
+        input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        .dropdown,
+        .text-input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #E0E0FF;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #F8F7FF;
+            color: #333;
+        }
+
+        /* Checkbox Styles */
+        .checkbox-label {
+            font-size: 16px;
+            margin-right: 10px;
+            color: #5F5A9F;
+        }
+
+        .checkbox {
+            transform: scale(1.2);
+            margin-bottom: 20px;
+        }
+
+        /* Submit Button Styles */
+        .submit-btn {
+            padding: 12px 20px;
+            background-color: #7D7ACD; /* Lavender button */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #5F5A9F; /* Darker lavender on hover */
+        }
+
+        /* View Button Styles */
+        .view-btn {
+            padding: 12px 20px;
+            background-color: #E0E0FF;
+            color: #333;
+            border: 1px solid #7D7ACD;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .view-btn:hover {
+            background-color: #C8C6FF;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload an Image for Processing</h1>
-    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" />
-        <input type="submit" value="Upload" />
-    </form>
+    <div class="container">
+        <h1>Upload and Process Bill Image</h1>
+
+        <!-- Form to upload an image and select/create an Excel file -->
+        <form action="/upload" method="POST" enctype="multipart/form-data" class="form">
+            <label for="file">Choose an image file:</label>
+            <div class="file-input-wrapper">
+                <button class="file-input">Choose File</button>
+                <input type="file" name="file" required>
+            </div>
+            <br><br>
+
+            <h3>Select an existing Excel file or create a new one</h3>
+
+            <!-- Dropdown for existing Excel files -->
+            <label for="existing_file">Select an existing file:</label>
+            <select name="existing_file" class="dropdown">
+                <option value="">--Select Excel File--</option>
+                {% for file in excel_files %}
+                    <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <!-- Input to create a new Excel file -->
+            <label for="new_file_name">Or create a new file (leave empty if selecting existing):</label>
+            <input type="text" name="new_file_name" class="text-input" placeholder="Enter new file name (without .xlsx)"><br><br>
+
+            <!-- Option to create a new Excel file (checkbox) -->
+            <label for="create_new" class="checkbox-label">Create a new Excel file?</label>
+            <input type="checkbox" name="create_new" class="checkbox"><br><br>
+
+            <input type="submit" value="Upload and Process" class="submit-btn">
+        </form>
+
+        <!-- Button to view the Excel file if available -->
+        {% if excel_available %}
+            <a href="/view_excel"><button class="view-btn">View Excel File</button></a>
+        {% endif %}
+    </div>
 </body>
 </html>
